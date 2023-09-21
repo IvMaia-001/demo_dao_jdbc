@@ -12,9 +12,9 @@ import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-public class SellerDaoJDBC implements SellerDao{
+public class SellerDaoJDBC implements SellerDao {
 
-	private Connection conn = null;
+	private Connection conn;
 	
 	public SellerDaoJDBC(Connection conn) {
 		this.conn = conn;
@@ -44,14 +44,14 @@ public class SellerDaoJDBC implements SellerDao{
 		ResultSet rs = null;
 		try {
 			st = conn.prepareStatement(
-				"SELECT seller.*,department.Name as DepName "
-				+ "FROM seller INNER JOIN department "
-				+ "ON seller.DepartmentId = department.Id "
-				+ "WHERE seller.Id = ?");
+					"SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "WHERE seller.Id = ?");
 			
 			st.setInt(1, id);
 			rs = st.executeQuery();
-			if(rs.next()) {
+			if (rs.next()) {
 				Department dep = new Department();
 				dep.setId(rs.getInt("DepartmentId"));
 				dep.setName(rs.getString("DepName"));
@@ -60,14 +60,14 @@ public class SellerDaoJDBC implements SellerDao{
 				obj.setName(rs.getString("Name"));
 				obj.setEmail(rs.getString("Email"));
 				obj.setBaseSalary(rs.getDouble("BaseSalary"));
-				obj.setBrithDate(rs.getDate("BirthDate"));
+				obj.setBirthDate(rs.getDate("BirthDate"));
 				obj.setDepartment(dep);
-				
+				return obj;
 			}
 			return null;
 		}
-		catch (SQLException e){
-			throw new DbException(e.getMessage());			
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
@@ -80,7 +80,4 @@ public class SellerDaoJDBC implements SellerDao{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
-
 }
